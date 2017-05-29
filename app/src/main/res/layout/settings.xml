@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:layout_marginBottom="@dimen/margin_bottom"
+        android:theme="@style/Theme.AppCompat.Light"/>
+
+    <TextView
+        android:text="@string/txt_description_track"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_bottom"
+        android:textSize="@dimen/text_size"
+        android:layout_marginBottom="@dimen/margin_bottom"
+        android:textColor="@color/edit_text_text"
+        android:id="@+id/textView" />
+
+    <Switch
+        android:text="@string/switch_desc"
+        android:layout_width="wrap_content"
+        android:paddingRight="@dimen/margin_bottom"
+        android:textSize="@dimen/text_size"
+        android:drawablePadding="@dimen/margin_bottom"
+        android:layout_height="wrap_content"
+        android:id="@+id/tracking" />
+</LinearLayout>
