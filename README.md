@@ -2,7 +2,7 @@
 <p><strong>Primary Goals:</strong></p>
 <p>&nbsp;</p>
 <ul>
-<li><span style="text-decoration: line-through;">Build an app that can display the user&rsquo;s current location on a map</span></li>
+<li><span style="text-decoration: line-through;"><del>Build an app that can display the user&rsquo;s current location on a map</del></span></li>
 <li><span style="text-decoration: line-through;">Update the map in real time as the user moves.</span></li>
 <li><span style="text-decoration: line-through;">In response to a &ldquo;tracking on/off&rdquo; UI switch, record or do not record the user&rsquo;s movements.</span></li>
 <li><span style="text-decoration: line-through;">Display a path over the map as the user moves.</span></li>
