@@ -90,6 +90,8 @@ public class backgroundTracking extends Service implements LocationListener,Sens
         linearAcceleration = senseManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER); // initialization of LINEAR_ACCELERATION
         senseManager.registerListener(this,linearAcceleration,SensorManager.SENSOR_DELAY_NORMAL);
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        //setting up checker fevery X second, to check all actions regarding location requests
         h.postDelayed(new Runnable() {
             public void run() {
               // Log.i(TAG,db.getTableAsString(Db,"journeys"));
@@ -116,11 +118,10 @@ public class backgroundTracking extends Service implements LocationListener,Sens
 
     public void stopTracking(LocationListener customListener, LocationManager customManager) {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
             return;
         }
         howIsTracking = false;
-        Log.i(TAG,"stopped tracking");
+        //getting time when journey stopped
         String tempDate= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
@@ -134,6 +135,8 @@ public class backgroundTracking extends Service implements LocationListener,Sens
             long duration = lastLoc.getTime()-firstLoc.getTime();
             float distance = firstLoc.distanceTo(lastLoc);
             float avgSpeed = (firstLoc.getSpeed()+lastLoc.getSpeed())/2;
+            //I didn't want to spend time getting actual altitude,
+            // on my testing env it was always 0, I am just saving data for showing purpose
             double heightDiff = firstLoc.getAltitude();
             Journey jou = new Journey(String.valueOf(startDate),String.valueOf(endDate),duration,distance,avgSpeed,heightDiff,savePoints(points),saveLocations(locations));
             db.createJourney(jou);
@@ -148,8 +151,8 @@ public class backgroundTracking extends Service implements LocationListener,Sens
 
             return;
         }
-        Log.i(TAG,"started tracking");
         howIsTracking = true;
+        //getting time of journey start
         String tempDate= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
@@ -157,7 +160,7 @@ public class backgroundTracking extends Service implements LocationListener,Sens
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
+        //starting location listener
         customManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
                 MINIMUM_TIME_BETWEEN_UPDATES,
@@ -165,6 +168,7 @@ public class backgroundTracking extends Service implements LocationListener,Sens
                 customListener);
 
     }
+    //check settings value of tracking
     public Boolean isAppTracking(){
         SharedPreferences sharedPref = getSharedPreferences("tracking",MODE_PRIVATE);
         String gotTracking = sharedPref.getString("track","null");
@@ -174,15 +178,17 @@ public class backgroundTracking extends Service implements LocationListener,Sens
             return false;
         }
     }
+    /*check if device is moving on left on a table,
+    if it hasn't moved for the past X minutes stop tracking  until next movement to save battery*/
     public void putAppToSleep(){
-        Log.i("lastShake",String.valueOf(System.currentTimeMillis()-lastShake));
+        //Log.i("lastShake",String.valueOf(System.currentTimeMillis()-lastShake));
         if(isAppTracking()){
             if((System.currentTimeMillis()-lastShake)>=SLEEP_TIME && howIsTracking){
                 stopTracking(MyLocationListener,locationManager);
-                Log.i(TAG,"going to sleep");
+                //Log.i(TAG,"going to sleep");
             }else if((System.currentTimeMillis()-lastShake)<=SLEEP_TIME && !howIsTracking){
                 startTracking(MyLocationListener,locationManager);
-                Log.i(TAG,"waking up");
+                //Log.i(TAG,"waking up");
             }
         }
     }
@@ -190,39 +196,35 @@ public class backgroundTracking extends Service implements LocationListener,Sens
     public void onLocationChanged(Location location) {
         locations.add(location);
         userLocation = location;
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude()); //you already have this
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         points.add(latLng); //added
         MainActivity.redrawLine(points,latLng,isAppTracking()); //added
-        Log.i(TAG,"location updated");
     }
 
     @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
-
+    public void onStatusChanged(String s, int i, Bundle bundle) {}
     @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
+    public void onProviderEnabled(String s) {}
     @Override
-    public void onProviderDisabled(String s) {
-
-    }
+    public void onProviderDisabled(String s) {}
+    /*
+    * saving all Locations objects in database as json array
+    * only for showing that it can be done, they are not used in this test*/
     public String saveLocations(ArrayList<Location> locations) {
-        Log.i(TAG,"Saving location");
         Gson gson = new GsonBuilder().create();
         JsonArray myCustomArray = gson.toJsonTree(locations).getAsJsonArray();
         return myCustomArray.toString();
     }
+    /*
+    * Saving LatLon point to redraw journey without touching location points*/
     public String savePoints(ArrayList<LatLng> pointsCustom) {
         Log.i(TAG,"Saving points");
         Gson gson = new GsonBuilder().create();
         JsonArray myCustomArray = gson.toJsonTree(pointsCustom).getAsJsonArray();
         return myCustomArray.toString();
     }
-
+    /*
+    * Getting accellerometer data to check sleep time*/
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
@@ -246,7 +248,5 @@ public class backgroundTracking extends Service implements LocationListener,Sens
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-
-    }
+    public void onAccuracyChanged(Sensor sensor, int i) {}
 }

@@ -28,7 +28,8 @@ public class listAdapter extends ArrayAdapter<Journey> {
     public listAdapter(Context context, int resource, List<Journey> values) {
         super(context, resource, values);
     }
-
+    /*
+    * displaying quick data of journeys in a simple listview*/
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) getContext()

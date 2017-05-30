@@ -40,7 +40,7 @@ import thefloowtt.giacomo.com.thefloowtt.journey.showJourneys;
 
 public class MainActivity extends AppCompatActivity
         implements GoogleMap.OnMyLocationButtonClickListener,
-        OnMapReadyCallback, LocationListener,
+        OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback {
     private static GoogleMap mMap;
     final private int REQUEST_CODE_ASK_PERMISSIONS = 1;
@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -112,18 +111,10 @@ public class MainActivity extends AppCompatActivity
         Log.i(TAG, String.valueOf(locationManager.getAllProviders()));
         bestProvider = String.valueOf(locationManager.GPS_PROVIDER).toString();
         android.location.LocationListener locationListener = new android.location.LocationListener() {
-            public void onLocationChanged(Location location) {
-                //Any method here
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            public void onProviderEnabled(String provider) {
-            }
-
-            public void onProviderDisabled(String provider) {
-            }
+            public void onLocationChanged(Location location) {}
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            public void onProviderEnabled(String provider) {}
+            public void onProviderDisabled(String provider) {}
         };
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -142,25 +133,6 @@ public class MainActivity extends AppCompatActivity
         } else {
             locationManager.requestLocationUpdates(bestProvider, 1000, 0, locationListener);
         }
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        //remove location callback:
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        //open the map:
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-        LatLng latLng = new LatLng(latitude, longitude); //you already have this
-
-        //points.add(latLng); //added
-
-        //redrawLine(); //added
-        Toast.makeText(this, "latitude:" + latitude + " longitude:" + longitude, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -186,8 +158,9 @@ public class MainActivity extends AppCompatActivity
         }
         return super.onOptionsItemSelected(item);
     }
-
-
+    /*when map is loaded go to current location if tracking is not on, if it is on don't
+    do anything, because journey tracking is managed in background service
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -207,17 +180,13 @@ public class MainActivity extends AppCompatActivity
             mMap.setMyLocationEnabled(true);
             goToCurrentLocation();
         }
-
     }
-
     @Override
     public boolean onMyLocationButtonClick() {
-        //Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        //Intent intent = new Intent(this, backgroundTracking.class);
-        //stopService(intent);
         return false;
     }
-
+    /*
+    * drawing polyline of suer movement in current map*/
     public static void redrawLine(ArrayList<LatLng> points, LatLng latLng, Boolean isTracking) {
         if(mMap!=null){
             //clears all Markers and Polylines
@@ -235,79 +204,17 @@ public class MainActivity extends AppCompatActivity
                 mMap.clear();
             }
         }
-       /* if (isUserMoving(latLng)) {
-           // Log.i(TAG,points.toString());
-            Log.i(TAG,"user is moving");
-            PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
-            for (int i = 0; i < points.size(); i++) {
-                LatLng point = points.get(i);
-                options.add(point);
-            }
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-            mMap.animateCamera(cameraUpdate);
-            line = mMap.addPolyline(options); //add Polyline
-        } else {
-            Log.i(TAG,"user not moving");
-            mMap.clear();
-        }*/
-
-        //add Polyline
-    }
-
-    public static Boolean isUserMoving(LatLng latlo) {
-        double venueLat = lastKnownLat; // Last known lat
-        double venueLng = lastKnowLng; // Last known lng
-        double latDistance = Math.toRadians(latlo.latitude - venueLat);
-        double lngDistance = Math.toRadians(latlo.longitude - venueLng);
-        double a = (Math.sin(latDistance / 2) * Math.sin(latDistance / 2)) +
-                (Math.cos(Math.toRadians(latlo.latitude))) *
-                        (Math.cos(Math.toRadians(venueLat))) *
-                        (Math.sin(lngDistance / 2)) *
-                        (Math.sin(lngDistance / 2));
-
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        double dist = 6371 * c;
-        if (dist < 0.10) {// (in km, you can use 0.1 for metres etc.)
-            return true; /* If it's within 10m, we assume we're not moving */
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("Main Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
 
     @Override
     public void onStop() {
         super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
     }
 }

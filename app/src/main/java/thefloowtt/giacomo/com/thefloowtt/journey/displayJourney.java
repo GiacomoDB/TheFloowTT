@@ -24,7 +24,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
@@ -62,6 +65,7 @@ public class displayJourney extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         db = new MySQLiteHelper(getApplicationContext());
+        //inizialing map
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -75,7 +79,7 @@ public class displayJourney extends AppCompatActivity
         super.onPause();
     }
 
-
+    /*drawing selected journey when map is loaded*/
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -112,12 +116,10 @@ public class displayJourney extends AppCompatActivity
 
     @Override
     public boolean onMyLocationButtonClick() {
-        //Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        //Intent intent = new Intent(this, backgroundTracking.class);
-        //stopService(intent);
         return false;
     }
 
+    /*drawing journey from array of LatLng points*/
     public static void drawJourney(ArrayList<LatLng> points) {
         if(mMap!=null){
             Log.i(TAG,"map is not null");
@@ -127,6 +129,11 @@ public class displayJourney extends AppCompatActivity
                 PolylineOptions options = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);
                 for (int i = 0; i < points.size(); i++) {
                     LatLng point = points.get(i);
+                    if(i==0){
+                        placeMarker(point,0);
+                    }else if(i==points.size()-1){
+                        placeMarker(point,1);
+                    }
                     Log.i(TAG,String.valueOf(point));
                     options.add(point);
                 }
@@ -138,37 +145,19 @@ public class displayJourney extends AppCompatActivity
             Log.i(TAG,"map is null");
         }
     }
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("Main Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
-    }
 
     @Override
     public void onStart() {
         super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
 
     @Override
     public void onStop() {
         super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -177,5 +166,17 @@ public class displayJourney extends AppCompatActivity
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    /*method to place marker at start and end of the journey(0 -> start 1->end*/
+    public static void placeMarker(LatLng pos, int attribute) {
+        MarkerOptions m;
+        m = new MarkerOptions().position(pos);
+
+        if(attribute==0){
+             m.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        }else{
+             m.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        }
+        mMap.addMarker(m);
     }
 }

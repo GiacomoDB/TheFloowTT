@@ -86,6 +86,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         db.insert(TABLE_JOURNEYS, null, values);
 
     }
+    /**
+     * Getting all data from a specif journey (by ID)
+     */
     public Journey getJourney(int jou_id) throws ParseException {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -108,6 +111,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         c.close();
         return jou;
     }
+    /*
+    * printing all tables for logging purpose only*/
     public String getTableAsString(SQLiteDatabase db, String tableName) {
         db = this.getReadableDatabase();
         String tableString = String.format("Table %s:\n", tableName);
@@ -125,7 +130,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return tableString;
     }
 
-    //getting all journeys
+    //getting all journeys to populate the list
     public List<Journey> getAllJourneys() {
         List<Journey> journeys = new ArrayList<Journey>();
         String selectQuery = "SELECT  * FROM " + TABLE_JOURNEYS;

@@ -40,6 +40,8 @@ public class showJourneys extends AppCompatActivity {
         listJou = (ListView) findViewById(R.id.list);
         loading = (ProgressBar)findViewById(R.id.loadingBar);
         new getJourneys().execute("");
+
+        /*getting journey Id and starting display journey activity*/
         listJou.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
@@ -49,19 +51,18 @@ public class showJourneys extends AppCompatActivity {
                 showJourneys.this.startActivity(myIntent);            }
         });
     }
+    /*getting all journeys from database and displaying them on a custom list adapter*/
     public class getJourneys extends AsyncTask<Object, Void, List<Journey> >{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             loading.setVisibility(View.VISIBLE);
         }
-        // This is run in a background thread
         @Override
         protected List<Journey> doInBackground(Object... objects) {
             journeys = db.getAllJourneys();
             return journeys;
         }
-        // This runs in UI when background thread finishes
         @Override
         protected void onPostExecute(List<Journey> jous){
             super.onPostExecute(jous);
@@ -71,7 +72,6 @@ public class showJourneys extends AppCompatActivity {
             listAdapter adapter = new listAdapter(getApplicationContext(),R.layout.list_row, jous);
             listJou.setAdapter(adapter);
             loading.setVisibility(View.INVISIBLE);
-            // Do things like hide the progress bar or change a TextView
             adapter.notifyDataSetChanged();
         }
     }

@@ -40,8 +40,7 @@
 
         <service
             android:name=".backgroundTracking"
-            android:enabled="true"
-            android:exported="true" />
+            android:enabled="true"/>
 
         <activity
             android:name=".journey.showJourneys"
