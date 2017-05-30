@@ -13,14 +13,132 @@
         android:elevation="4dp"
         android:onClick="toolbarClick"
         android:theme="@style/Theme.AppCompat.Light"/>
-
+    <RelativeLayout
+        android:id="@+id/infos"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/toolbar">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/relativeDistance">
+            <TextView
+                android:id="@+id/distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/journey_duration"
+                android:textColor="@android:color/black"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_size_large"
+                android:layout_alignParentStart="true" />
+            <TextView
+                android:id="@+id/distance_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/duration"
+                android:textColor="@android:color/black"
+                android:layout_below="@+id/distance"
+                android:textSize="@dimen/text_size"
+                android:layout_alignParentStart="true" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/relativeDuration">
+        <TextView
+                android:id="@+id/duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/journey_distance"
+                android:textColor="@android:color/black"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                android:textSize="@dimen/text_size_large"
+                android:layout_alignParentStart="true" />
+            <TextView
+                android:id="@+id/duration_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/distance"
+                android:textColor="@android:color/black"
+                android:layout_below="@+id/duration"
+                android:textSize="@dimen/text_size"
+                android:layout_alignParentStart="true" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:layout_alignParentRight="true"
+            android:id="@+id/relativeAvgSpeed">
+        <TextView
+                android:id="@+id/avg_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/journey_name"
+                android:textColor="@android:color/black"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                android:textSize="@dimen/text_size_large"
+                android:layout_alignParentStart="true" />
+            <TextView
+                android:id="@+id/avg_speed_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/avg_speed"
+                android:textColor="@android:color/black"
+                android:layout_below="@+id/avg_speed"
+                android:textSize="@dimen/text_size"
+                android:layout_alignParentStart="true" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/relativeDistance"
+            android:id="@+id/relativeHeight">
+            <TextView
+                android:id="@+id/height"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/journey_name"
+                android:textColor="@android:color/black"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp"
+                android:textSize="@dimen/text_size_large"
+                android:layout_alignParentStart="true" />
+            <TextView
+                android:id="@+id/height_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/height"
+                android:textColor="@android:color/black"
+                android:layout_below="@+id/height"
+                android:textSize="@dimen/text_size"
+                android:layout_alignParentStart="true" />
+        </RelativeLayout>
+    </RelativeLayout>
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:id="@+id/map"
         tools:context=".MapsActivity"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_below="@+id/toolbar" />
+        android:layout_below="@+id/infos" />
 
 </RelativeLayout>

@@ -20,5 +20,10 @@
     <string name="journey_distance">name</string>
     <string name="journey_start_time">start_time</string>
     <string name="action_journeys">Check Journeys</string>
+    <string name="distance">Distance(Km)</string>
+    <string name="duration">Duration(Min)</string>
+    <string name="avg_speed">Speed(Km/h)</string>
     <string name="title_activity_display_journey">displayJourney</string>
+    <string name="height">Altitude</string>
+
 </resources>

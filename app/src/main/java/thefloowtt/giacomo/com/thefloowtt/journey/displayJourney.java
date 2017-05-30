@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -30,15 +31,18 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.vision.text.Text;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import thefloowtt.giacomo.com.thefloowtt.R;
 import thefloowtt.giacomo.com.thefloowtt.helper.MySQLiteHelper;
@@ -56,11 +60,19 @@ public class displayJourney extends AppCompatActivity
     private List<String> pointsTemp = new ArrayList<String>();
     private ArrayList<LatLng> points = new ArrayList<LatLng>();
     private int journeyId;
+    private TextView distance;
+    private TextView duration;
+    private TextView avgSpeed;
+    private TextView altitude;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.display_journey);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        distance = (TextView) findViewById(R.id.distance);
+        duration = (TextView) findViewById(R.id.duration);
+        avgSpeed = (TextView) findViewById(R.id.avg_speed);
+        altitude = (TextView) findViewById(R.id.height);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -90,6 +102,13 @@ public class displayJourney extends AppCompatActivity
             return;
         }
         Journey jou = db.getSingleJourney(journeyId);
+        /*setting and showing this data per showing purpose, any data can be added or showed here*/
+        int minutes = (int) ((jou.getDuration() / (1000*60)) % 60);
+        duration.setText(String.valueOf(minutes));
+        DecimalFormat df = new DecimalFormat("###.##");
+        distance.setText(String.valueOf( df.format(jou.getDistance() * .001))+" Km");
+        avgSpeed.setText(String.valueOf(jou.getAverageSpeed()));
+        altitude.setText(String.valueOf(jou.getHeightDifference()));
         pointsTemp =  Arrays.asList(jou.getInformations().split(","));
         double longitude = 0;
         double latitude = 0;

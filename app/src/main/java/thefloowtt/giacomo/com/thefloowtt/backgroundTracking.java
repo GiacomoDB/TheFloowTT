@@ -17,10 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
-import android.util.FloatMath;
 import android.util.Log;
-import android.widget.Toast;
-
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,20 +25,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-
 import thefloowtt.giacomo.com.thefloowtt.helper.MySQLiteHelper;
 import thefloowtt.giacomo.com.thefloowtt.journey.Journey;
-
 import static com.google.android.gms.wearable.DataMap.TAG;
 
 public class backgroundTracking extends Service implements LocationListener,SensorEventListener {
@@ -79,7 +69,6 @@ public class backgroundTracking extends Service implements LocationListener,Sens
 
     @Override
     public void onCreate() {
-        Toast.makeText(this, "service started", Toast.LENGTH_SHORT).show();
         db = new MySQLiteHelper(getApplicationContext());
         final Handler h = new Handler();
         final int delay = 3000; //milliseconds
@@ -113,7 +102,6 @@ public class backgroundTracking extends Service implements LocationListener,Sens
     @Override
     public void onDestroy() {
         stopTracking(MyLocationListener, locationManager);
-        Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
     }
 
     public void stopTracking(LocationListener customListener, LocationManager customManager) {
